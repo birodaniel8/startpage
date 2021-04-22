@@ -10,7 +10,6 @@ const Apps = () => {
     <Provider store={store}>
       <div className="center">
         <HomePage />
-        {/* <h1>afasdfd</h1> */}
       </div>
     </Provider>
   );
