@@ -17,7 +17,6 @@ const StartPage = () => {
           name="newCityForm" />}
           label="Show new city form"
         />
-        <Typography component="h4" variant="h4">{newCityFormChecked.toString()}</Typography>
       </Grid>
     </Grid>
   );
