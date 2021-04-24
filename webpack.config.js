@@ -1,5 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: "./startpage/frontend/src/index.js",
@@ -25,8 +26,11 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env": {
         // This has effect on the react lib size
-        'process.env.NODE_ENV': JSON.stringify("production"),
+        "process.env.NODE_ENV": JSON.stringify("production"),
       },
+    }),
+    new HtmlWebpackPlugin({
+      favicon: "favicon.ico",
     }),
   ],
 };

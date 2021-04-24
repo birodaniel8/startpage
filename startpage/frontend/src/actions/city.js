@@ -1,57 +1,57 @@
-import axios from 'axios';
-import city from '../reducers/city.js';
+import axios from "axios";
+import city from "../reducers/city.js";
 import { GET_CITIES, ADD_CITY, DELETE_CITY } from "./types.js";
 
-const weather_api_url = "https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=08606897ce9191268be3898882f911e6"
+export const weather_api_url =
+  "https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=08606897ce9191268be3898882f911e6";
 
-// const getCityTemperatureData = async (city) => {
-//   axios
-//     .get(weather_api_url.replace("{}", city.city_name))
-//     .then(response => {
-//       console.log("asdf")
-//       console.log(response)
-//       return ({
-//         ...city,
-//         temperature: response,
-//       })
-//     })
-//     .catch((error) => console.log(error)); 
-// }
-
-// const getTemperatureData = (cityList) => {
-//   console.log(cityList.map(city => getCityTemperatureData(city)))
-// };
+async function add_temperature_data(city_data) {
+  return fetch(weather_api_url.replace("{}", city_data.city_name))
+    .then((response) => response.json())
+    .then((response) => {
+      return {
+        ...city_data,
+        temperature_data: response,
+      };
+    });
+}
 
 // Get city list:
-export const getCityList = () => dispatch => {
+export const getCityList = () => (dispatch) => {
   axios
     .get("/api/city/")
-    .then(response => {
-      // console.log(response.data)
-      // const temperatureData = getTemperatureData(response.data)
-      // console.log(temperatureData)
+    .then((response) => {
+      return Promise.all(
+        response.data.map((city_data) => add_temperature_data(city_data))
+      );
+    })
+    .then((response) => {
       dispatch({
         type: GET_CITIES,
-        payload: response.data,
+        payload: response,
       });
-    }).catch((error) => console.log(error));
+    })
+    .catch((error) => console.log(error));
 };
 
-
 // Add city:
-export const addCity = (city) => dispatch => {
+export const addCity = (city) => (dispatch) => {
   axios
     .post("/api/city/", city)
     .then((response) => {
+      return add_temperature_data(response.data);
+    })
+    .then((response) => {
       dispatch({
         type: ADD_CITY,
-        payload: response.data,
+        payload: response,
       });
-    }).catch((error) => console.log(error));
+    })
+    .catch((error) => console.log(error));
 };
 
 // Delete city:
-export const deleteCity = (id) => dispatch => {
+export const deleteCity = (id) => (dispatch) => {
   axios
     .delete(`/api/city/${id}/`)
     .then((response) => {
@@ -59,5 +59,6 @@ export const deleteCity = (id) => dispatch => {
         type: DELETE_CITY,
         payload: id,
       });
-    }).catch((error) => console.log(error));
+    })
+    .catch((error) => console.log(error));
 };

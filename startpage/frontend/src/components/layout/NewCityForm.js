@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { PropTypes } from 'prop-types';
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { PropTypes } from "prop-types";
 import { TextField, Button, Grid } from "@material-ui/core";
 
-import { addCity } from "../../actions/city";
+import { addCity, weather_api_url } from "../../actions/city";
 
 // NewCityForm:
 const NewCityForm = ({ city_list, addCity }) => {
@@ -12,15 +12,23 @@ const NewCityForm = ({ city_list, addCity }) => {
   const [errorText, setErrorText] = useState("");
 
   const submitNewCity = () => {
-    if (city_list.filter(city => city.city_name === newCityName).length) {
+    const newCityCapitalized = newCityName.charAt(0).toUpperCase() + newCityName.slice(1)
+    if (city_list.filter((city) => city.city_name === newCityCapitalized).length) {
       setError(true);
       setErrorText("City already exists");
     } else {
-      const newCity = { city_name: newCityName }
-      addCity(newCity)
-      console.log("city added")
+      fetch(weather_api_url.replace("{}", newCityCapitalized)).then((response) => response.json()).then((response) => {
+        if (response.cod === 200) {
+          const newCity = { city_name: newCityCapitalized };
+          addCity(newCity);
+          console.log("city added");
+        } else {
+          setError(true);
+          setErrorText("City doesn't exists");
+        }
+      });
     }
-  }
+  };
 
   return (
     <Grid container spacing={1}>
@@ -38,11 +46,7 @@ const NewCityForm = ({ city_list, addCity }) => {
         />
       </Grid>
       <Grid item xs={12} align="center">
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={submitNewCity}
-        >
+        <Button color="primary" variant="contained" onClick={submitNewCity}>
           Add a New City
         </Button>
       </Grid>

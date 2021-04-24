@@ -2,7 +2,6 @@ import { GET_CITIES, ADD_CITY, DELETE_CITY } from "../actions/types.js";
 
 const initialState = {
   city_list: [],
-  city_temperatures: {}
 }
 
 export default function(state = initialState, action) {
