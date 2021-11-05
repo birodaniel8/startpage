@@ -13,6 +13,7 @@ import { getCityList } from "../actions/city";
 
 import NewCityForm from "./layout/NewCityForm";
 import CityCard from "./layout/CityCard";
+import NewsFeed from "./layout/NewsFeed";
 
 // StartPage functional component:
 const StartPage = ({ city_list, getCityList }) => {
@@ -47,12 +48,15 @@ const StartPage = ({ city_list, getCityList }) => {
           <NewCityForm />
         </Collapse>
       </Grid>
-      <Grid item xs={12} sm={6} md={4} lg={3} xl={2} align="center">
+      <Grid item xs={12} align="center">
         {city_list.map((city) => (
-          <CityCard city={city} key={city.id} />
+          <CityCard city={city} key={city.id}/>
         ))}
       </Grid>
       {console.log(city_list)}
+      <Grid item xs={12} align="center">
+        <NewsFeed />
+      </Grid>
     </Grid>
   );
 };
